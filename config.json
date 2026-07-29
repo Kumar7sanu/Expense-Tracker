@@ -1,0 +1,173 @@
+{
+  "telegram_token": "8732347826:AAGMmB_Ud3IdEPEKX7ExIE11kJBlLEYAypQ",
+
+  "currency": "₹",
+  "currencyCode": "INR",
+  "locale": "en-IN",
+
+  "dashboardTitle": "Personal Expense Tracker",
+
+  "monthlyBudget": 100000,
+
+  "budgets": {
+    "food": 8000,
+    "travel": 5000,
+    "groceries": 7000,
+    "rent": 18000,
+    "bills": 5000,
+    "clothes": 4000,
+    "luxuries": 3000,
+    "investments": 10000,
+    "health": 4000,
+    "education": 3000,
+    "other": 5000
+  },
+
+  "categories": [
+    "food",
+    "travel",
+    "groceries",
+    "rent",
+    "bills",
+    "clothes",
+    "luxuries",
+    "investments",
+    "health",
+    "education",
+    "income",
+    "other"
+  ],
+
+  "merchants": {
+    "Swiggy": ["swiggy"],
+    "Zomato": ["zomato"],
+    "Uber": ["uber"],
+    "Ola": ["ola"],
+    "Rapido": ["rapido"],
+    "Blinkit": ["blinkit"],
+    "Zepto": ["zepto"],
+    "BigBasket": ["bigbasket"],
+    "Amazon": ["amazon"],
+    "Flipkart": ["flipkart"],
+    "Myntra": ["myntra"],
+    "Ajio": ["ajio"],
+    "Netflix": ["netflix"],
+    "Spotify": ["spotify"],
+    "Jio": ["jio"],
+    "Airtel": ["airtel"],
+    "Salary": ["salary"],
+    "Cashback": ["cashback"],
+    "Refund": ["refund"]
+  },
+
+  "categoryKeywords": {
+    "food": [
+      "swiggy",
+      "zomato",
+      "chai",
+      "coffee",
+      "restaurant",
+      "pizza",
+      "burger",
+      "breakfast",
+      "lunch",
+      "dinner",
+      "cafe"
+    ],
+
+    "travel": [
+      "uber",
+      "ola",
+      "rapido",
+      "metro",
+      "bus",
+      "flight",
+      "cab",
+      "taxi",
+      "petrol",
+      "fuel"
+    ],
+
+    "groceries": [
+      "blinkit",
+      "zepto",
+      "bigbasket",
+      "grocery",
+      "milk",
+      "vegetables",
+      "fruits"
+    ],
+
+    "clothes": [
+      "shirt",
+      "jeans",
+      "shoes",
+      "myntra",
+      "ajio",
+      "zara"
+    ],
+
+    "rent": [
+      "rent",
+      "house rent",
+      "flat"
+    ],
+
+    "bills": [
+      "electricity",
+      "wifi",
+      "internet",
+      "water",
+      "gas",
+      "mobile",
+      "recharge"
+    ],
+
+    "luxuries": [
+      "movie",
+      "gym",
+      "netflix",
+      "spotify",
+      "beer",
+      "cigarette",
+      "cigar",
+      "hookah"
+    ],
+
+    "investments": [
+      "sip",
+      "mutual fund",
+      "etf",
+      "stocks",
+      "investment",
+      "gold"
+    ],
+
+    "health": [
+      "hospital",
+      "medicine",
+      "doctor",
+      "pharmacy",
+      "medical"
+    ],
+
+    "education": [
+      "course",
+      "udemy",
+      "book",
+      "exam",
+      "college"
+    ]
+  },
+
+  "incomeKeywords": [
+    "salary",
+    "credited",
+    "received",
+    "income",
+    "cashback",
+    "refund",
+    "bonus",
+    "interest"
+  ]
+}

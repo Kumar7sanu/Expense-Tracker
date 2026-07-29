@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Personal Expense Tracker</title>
+
+<script src="data.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:Arial, Helvetica, sans-serif;
+
+    background:#111827;
+
+    color:#fff;
+
+    padding:30px;
+
+}
+
+.container{
+
+    max-width:1500px;
+
+    margin:auto;
+
+}
+
+h1{
+
+    font-size:34px;
+
+    margin-bottom:8px;
+
+}
+
+.subtitle{
+
+    color:#9CA3AF;
+
+    margin-bottom:30px;
+
+}
+
+.card{
+
+    background:#1F2937;
+
+    border-radius:14px;
+
+    padding:22px;
+
+    border:1px solid #374151;
+
+}
+
+.section-title{
+
+    font-size:20px;
+
+    margin-bottom:18px;
+
+}
+
+.kpi-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(6,1fr);
+
+    gap:18px;
+
+    margin-bottom:24px;
+
+}
+
+.kpi{
+
+    min-height:120px;
+
+}
+
+.dashboard-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:24px;
+
+}
+
+.full-width{
+
+    grid-column:1/-1;
+
+}
+
+.placeholder{
+
+    height:280px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#6B7280;
+
+    border:2px dashed #374151;
+
+    border-radius:10px;
+
+    font-size:20px;
+
+}
+
+.table-placeholder{
+
+    height:350px;
+
+}
+
+.insight-placeholder{
+
+    height:180px;
+
+}
+
+@media(max-width:1200px){
+
+    .kpi-grid{
+
+        grid-template-columns:repeat(3,1fr);
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .kpi-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+    .dashboard-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:500px){
+
+    .kpi-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .kpi{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    transition:.25s;
+
+    cursor:pointer;
+
+}
+
+.kpi:hover{
+
+    transform:translateY(-5px);
+
+    border-color:#10B981;
+
+    box-shadow:0 8px 25px rgba(16,185,129,.20);
+
+}
+
+.kpi-title{
+
+    font-size:14px;
+
+    color:#9CA3AF;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    margin-bottom:12px;
+
+}
+
+.kpi-value{
+
+    font-size:34px;
+
+    font-weight:bold;
+
+    margin-bottom:10px;
+
+}
+
+.kpi-subtitle{
+
+    font-size:13px;
+
+    color:#6B7280;
+
+}
+
+.income{
+
+    color:#10B981;
+
+}
+
+.expense{
+
+    color:#EF4444;
+
+}
+
+.savings{
+
+    color:#3B82F6;
+
+}
+
+.budget{
+
+    color:#F59E0B;
+
+}
+
+.average{
+
+    color:#8B5CF6;
+
+}
+
+.projected{
+
+    color:#06B6D4;
+
+}
+
+.donut-wrapper{
+
+    position:relative;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    margin-top:20px;
+
+    margin-bottom:20px;
+
+}
+
+.donut-center{
+
+    position:absolute;
+
+    text-align:center;
+
+}
+
+.donut-total-label{
+
+    color:#9CA3AF;
+
+    font-size:14px;
+
+}
+
+.donut-total-value{
+
+    font-size:28px;
+
+    font-weight:bold;
+
+    margin-top:6px;
+
+}
+
+#donutLegend{
+
+    margin-top:25px;
+
+}
+
+.legend-row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:8px 0;
+
+    border-bottom:1px solid #374151;
+
+}
+
+.legend-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.legend-color{
+
+    width:14px;
+
+    height:14px;
+
+    border-radius:4px;
+
+}
+
+.legend-name{
+
+    color:#E5E7EB;
+
+}
+
+.legend-value{
+
+    font-weight:bold;
+
+}
+
+svg circle{
+
+    transition:.5s;
+
+}
+
+svg circle:hover{
+
+    transform:scale(1.03);
+
+}
+
+/* ---------- Category Bars ---------- */
+
+.category-row{
+
+    margin-bottom:18px;
+
+}
+
+.category-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:8px;
+
+}
+
+.category-name{
+
+    color:#F9FAFB;
+
+}
+
+.category-value{
+
+    color:#9CA3AF;
+
+}
+
+.category-track{
+
+    width:100%;
+
+    height:10px;
+
+    background:#374151;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+.category-fill{
+
+    height:100%;
+
+    width:0;
+
+    border-radius:20px;
+
+    background:#10B981;
+
+    transition:width 1.2s ease;
+
+}
+
+
+/* ---------- Budget ---------- */
+
+.budget-bar{
+
+    height:22px;
+
+    background:#374151;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    margin:25px 0;
+
+}
+
+.budget-progress{
+
+    height:100%;
+
+    width:0;
+
+    background:#10B981;
+
+    transition:width 1.2s ease;
+
+}
+
+.budget-stats{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-top:18px;
+
+}
+
+.budget-status{
+
+    margin-top:18px;
+
+    font-weight:bold;
+
+    font-size:18px;
+
+}
+
+
+/* ---------- Recent ---------- */
+
+.txn{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:14px 0;
+
+    border-bottom:1px solid #374151;
+
+}
+
+.txn-left{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.txn-merchant{
+
+    font-weight:bold;
+
+}
+
+.txn-category{
+
+    color:#9CA3AF;
+
+    font-size:13px;
+
+}
+
+.txn-amount{
+
+    font-weight:bold;
+
+}
+
+
+/* ---------- AI Insights ---------- */
+
+.insight-card{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:15px;
+
+    padding:16px;
+
+    margin-bottom:15px;
+
+    border-left:4px solid #10B981;
+
+    background:#111827;
+
+    border-radius:10px;
+
+}
+
+.insight-icon{
+
+    font-size:22px;
+
+}
+
+.insight-text{
+
+    line-height:1.6;
+
+    color:#E5E7EB;
+
+}
+
+.good{
+
+    border-left-color:#10B981;
+
+}
+
+.warning{
+
+    border-left-color:#F59E0B;
+
+}
+
+.danger{
+
+    border-left-color:#EF4444;
+
+}
+
+.card{
+
+    animation:fadeUp .7s ease both;
+
+}
+
+.card:nth-child(1){animation-delay:.05s;}
+.card:nth-child(2){animation-delay:.10s;}
+.card:nth-child(3){animation-delay:.15s;}
+.card:nth-child(4){animation-delay:.20s;}
+.card:nth-child(5){animation-delay:.25s;}
+.card:nth-child(6){animation-delay:.30s;}
+
+@keyframes fadeUp{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+.empty-state{
+
+    padding:60px;
+
+    text-align:center;
+
+    color:#9CA3AF;
+
+    font-size:18px;
+
+    border:2px dashed #374151;
+
+    border-radius:12px;
+
+}
+
+.card{
+
+    transition:.25s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 10px 25px rgba(0,0,0,.35);
+
+}
+
+@media(max-width:768px){
+
+    .kpi-value{
+
+        font-size:26px;
+
+    }
+
+    .section-title{
+
+        font-size:18px;
+
+    }
+
+    body{
+
+        padding:15px;
+
+    }
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>💰 Personal Expense Tracker</h1>
+
+    <div class="subtitle">
+
+        Offline Analytics Dashboard
+
+    </div>
+
+    <!-- KPI CARDS -->
+
+<div class="kpi-grid">
+
+    <div class="card kpi">
+        <div class="kpi-title">Income</div>
+        <div class="kpi-value income" id="incomeValue">₹0</div>
+        <div class="kpi-subtitle">Total Income</div>
+    </div>
+
+    <div class="card kpi">
+        <div class="kpi-title">Expense</div>
+        <div class="kpi-value expense" id="expenseValue">₹0</div>
+        <div class="kpi-subtitle">Total Expense</div>
+    </div>
+
+    <div class="card kpi">
+        <div class="kpi-title">Savings</div>
+        <div class="kpi-value savings" id="savingsValue">₹0</div>
+        <div class="kpi-subtitle">Income - Expense</div>
+    </div>
+
+    <div class="card kpi">
+        <div class="kpi-title">Budget Left</div>
+        <div class="kpi-value budget" id="budgetLeftValue">₹0</div>
+        <div class="kpi-subtitle">Remaining Budget</div>
+    </div>
+
+    <div class="card kpi">
+        <div class="kpi-title">Daily Average</div>
+        <div class="kpi-value average" id="dailyAverageValue">₹0</div>
+        <div class="kpi-subtitle">Average Per Day</div>
+    </div>
+
+    <div class="card kpi">
+        <div class="kpi-title">Projected</div>
+        <div class="kpi-value projected" id="projectedValue">₹0</div>
+        <div class="kpi-subtitle">Estimated Monthly Spend</div>
+    </div>
+
+</div>
+
+    <!-- DASHBOARD -->
+
+    <div class="dashboard-grid">
+
+        <div class="card">
+
+            <div class="section-title">
+
+                Expense Breakdown
+
+            </div>
+            
+            <div clas ="donut-wrapper">
+                <svg
+                    id="expenseDonut"
+                    width="260"
+                    height="260"
+                    viewBox="0 0 260 260">
+                
+                    <g transform="translate(130, 130)" id="donutGroup">
+                    </g>
+
+                </svg>
+
+                <div id="donutCenter" class="donut-center">
+                    <div class="donut-total-label">
+                        Total
+                    </div>
+
+                    <div class="donut-total-value" id="donutTotal">
+                        ₹0
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="donutLegend"> </div>
+
+        </div>    
+
+            <div class="placeholder">
+
+                Donut Chart
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="section-title">
+
+                Category Breakdown
+
+            </div>
+
+            <div id="categoryBars"></div>
+
+        </div>
+
+        <div class="card full-width">
+
+            <div class="section-title">
+
+                Monthly Trend
+
+            </div>
+
+            <div class="placeholder">
+
+                Line Chart
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="section-title">
+
+                Budget Health
+
+            </div>
+
+<div id="budgetWidget">
+
+    <div class="budget-bar">
+
+        <div
+            class="budget-progress"
+            id="budgetProgress">
+        </div>
+
+    </div>
+
+    <div class="budget-stats">
+
+        <div id="budgetPercent"></div>
+
+        <div id="budgetLeft"></div>
+
+    </div>
+
+    <div
+        id="budgetStatus"
+        class="budget-status">
+
+    </div>
+
+</div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="section-title">
+
+                Recent Transactions
+
+            </div>
+
+            <div id="recentTransactions"></div>
+
+        </div>
+
+        <div class="card full-width">
+
+            <div class="section-title">
+
+                Smart Insights
+
+            </div>
+
+            <div class="placeholder insight-placeholder">
+
+                AI Financial Insights
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const stats = window.EXPENSE_STATS;
+const config = window.EXPENSE_CONFIG;
+
+const currency = config.currency;
+
+
+
+function formatMoney(value){
+
+    return currency + Number(value).toLocaleString(
+        undefined,
+        {
+            minimumFractionDigits:0,
+            maximumFractionDigits:0
+        }
+    );
+
+}
+
+
+
+function animateValue(id,endValue,duration=1200){
+
+    const element=document.getElementById(id);
+
+    let start=0;
+
+    const startTime=performance.now();
+
+    function update(now){
+
+        const progress=Math.min((now-startTime)/duration,1);
+
+        const value=start+(endValue-start)*progress;
+
+        element.textContent=formatMoney(value);
+
+        if(progress<1){
+
+            requestAnimationFrame(update);
+
+        }
+
+    }
+
+    requestAnimationFrame(update);
+
+}
+
+
+
+function renderKPIs(){
+
+    animateValue("incomeValue",stats.income);
+
+    animateValue("expenseValue",stats.expense);
+
+    animateValue("savingsValue",stats.savings);
+
+    animateValue("budgetLeftValue",stats.budgetLeft);
+
+    animateValue("dailyAverageValue",stats.dailyAverage);
+
+    animateValue("projectedValue",stats.projected);
+
+}
+
+
+
+renderKPIs();
+
+</script>
+
+<script>
+    const donutColors = [
+
+    "#10B981",
+    "#3B82F6",
+    "#F59E0B",
+    "#EF4444",
+    "#8B5CF6",
+    "#06B6D4",
+    "#EC4899",
+    "#84CC16"
+
+];
+
+function polarToCartesian(cx, cy, r, angle){
+
+    const rad=(angle-90)*Math.PI/180;
+
+    return{
+
+        x:cx+r*Math.cos(rad),
+
+        y:cy+r*Math.sin(rad)
+
+    };
+
+}
+
+function createArc(start,end,r){
+
+    const startPt=polarToCartesian(0,0,r,end);
+
+    const endPt=polarToCartesian(0,0,r,start);
+
+    const large=end-start<=180?0:1;
+
+    return `
+
+        M ${startPt.x} ${startPt.y}
+
+        A ${r} ${r} 0 ${large} 0 ${endPt.x} ${endPt.y}
+
+    `;
+
+}
+
+function renderDonut(){
+
+    const group=document.getElementById("donutGroup");
+
+    const legend=document.getElementById("donutLegend");
+
+    group.innerHTML="";
+
+    legend.innerHTML="";
+
+    const totals=stats.categoryTotals;
+
+    const total=Object.values(totals).reduce((a,b)=>a+b,0);
+
+    document.getElementById("donutTotal").textContent=formatMoney(total);
+
+    let angle=0;
+
+    let i=0;
+
+    for(const category in totals){
+
+        const value=totals[category];
+
+        const percent=value/total;
+
+        const sweep=percent*360;
+
+        const path=document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path"
+        );
+
+        path.setAttribute(
+            "d",
+            createArc(angle,angle+sweep,90)
+        );
+
+        path.setAttribute("fill","none");
+
+        path.setAttribute(
+            "stroke",
+            donutColors[i%donutColors.length]
+        );
+
+        path.setAttribute("stroke-width","35");
+
+        path.setAttribute("stroke-linecap","round");
+
+        group.appendChild(path);
+
+        legend.innerHTML+=`
+
+            <div class="legend-row">
+
+                <div class="legend-left">
+
+                    <div
+                        class="legend-color"
+                        style="background:${donutColors[i%donutColors.length]}"
+                    ></div>
+
+                    <div class="legend-name">
+
+                        ${category}
+
+                    </div>
+
+                </div>
+
+                <div class="legend-value">
+
+                    ${formatMoney(value)}
+
+                </div>
+
+            </div>
+
+        `;
+
+        angle+=sweep;
+
+        i++;
+
+    }
+
+}
+
+renderDonut();
+</script>
+
+<script>
+    /* -------------------------------
+CATEGORY BARS
+--------------------------------*/
+
+function renderCategoryBars(){
+
+    const container=document.getElementById("categoryBars");
+
+    container.innerHTML="";
+
+    const totals=stats.categoryTotals;
+
+    const total=Object.values(totals)
+        .reduce((a,b)=>a+b,0);
+
+    for(const category in totals){
+
+        const value=totals[category];
+
+        const percent=(value/total)*100;
+
+        container.innerHTML+=`
+
+        <div class="category-row">
+
+            <div class="category-header">
+
+                <div class="category-name">
+
+                    ${category}
+
+                </div>
+
+                <div class="category-value">
+
+                    ${formatMoney(value)}
+
+                </div>
+
+            </div>
+
+            <div class="category-track">
+
+                <div
+
+                    class="category-fill"
+
+                    style="width:${percent}%"
+
+                ></div>
+
+            </div>
+
+        </div>
+
+        `;
+
+    }
+
+}
+
+/* -------------------------------
+BUDGET
+--------------------------------*/
+
+function renderBudget(){
+
+    const used=stats.expense/stats.budget*100;
+
+    const progress=document.getElementById("budgetProgress");
+
+    progress.style.width=Math.min(used,100)+"%";
+
+    let color="#10B981";
+
+    let status="🟢 On Track";
+
+    if(used>50){
+
+        color="#F59E0B";
+
+        status="🟡 Watch Spending";
+
+    }
+
+    if(used>80){
+
+        color="#EF4444";
+
+        status="🔴 Budget Critical";
+
+    }
+
+    progress.style.background=color;
+
+    document.getElementById("budgetPercent")
+        .textContent=used.toFixed(1)+"% Used";
+
+    document.getElementById("budgetLeft")
+        .textContent="Remaining "+formatMoney(stats.budgetLeft);
+
+    document.getElementById("budgetStatus")
+        .textContent=status;
+
+}
+
+/* -------------------------------
+RECENT
+--------------------------------*/
+
+function renderRecent(){
+
+    const recent=document.getElementById("recentTransactions");
+
+    recent.innerHTML="";
+
+    window.EXPENSE_DATA
+        .slice(0,6)
+        .forEach(txn=>{
+
+            recent.innerHTML+=`
+
+            <div class="txn">
+
+                <div class="txn-left">
+
+                    <div class="txn-merchant">
+
+                        ${txn.merchant}
+
+                    </div>
+
+                    <div class="txn-category">
+
+                        ${txn.category}
+
+                    </div>
+
+                </div>
+
+                <div class="txn-amount">
+
+                    ${txn.type==="income" ? "+" : "-"}
+
+                    ${formatMoney(txn.amount)}
+
+                </div>
+
+            </div>
+
+            `;
+
+        });
+
+}
+
+/* ------------------------------- */
+
+renderCategoryBars();
+
+renderBudget();
+
+renderRecent();
+</script>
+
+<script>
+    function addInsight(icon, text, type = "good") {
+
+    const container = document.getElementById("insightsContainer");
+
+    container.innerHTML += `
+        <div class="insight-card ${type}">
+            <div class="insight-icon">${icon}</div>
+            <div class="insight-text">${text}</div>
+        </div>
+    `;
+}
+
+if(window.EXPENSE_DATA.length===0){
+
+    showEmpty(
+        "recentTransactions",
+        "No transactions yet."
+    );
+
+}
+
+function renderInsights() {
+
+    const container = document.getElementById("insightsContainer");
+
+    container.innerHTML = "";
+
+    const expense = stats.expense;
+    const budget = stats.budget;
+    const budgetUsed = (expense / budget) * 100;
+
+    // Budget insight
+    if (budgetUsed < 50) {
+        addInsight(
+            "✅",
+            `Great job! You've used only ${budgetUsed.toFixed(1)}% of your monthly budget.`
+        );
+    } else if (budgetUsed < 80) {
+        addInsight(
+            "⚠️",
+            `You've used ${budgetUsed.toFixed(1)}% of your budget. Keep an eye on spending.`,
+            "warning"
+        );
+    } else {
+        addInsight(
+            "🚨",
+            `You've crossed ${budgetUsed.toFixed(1)}% of your budget. Consider reducing discretionary expenses.`,
+            "danger"
+        );
+    }
+
+    // Top category
+    const topCategory = stats.topCategory;
+
+    addInsight(
+        "📊",
+        `Your highest spending category is "${topCategory}" this month.`
+    );
+
+    // Top merchant
+    const topMerchant = stats.topMerchant;
+
+    addInsight(
+        "🏪",
+        `Most of your spending was at "${topMerchant}".`
+    );
+
+    // Savings
+    if (stats.savings > 0) {
+
+        addInsight(
+            "💰",
+            `Current savings: ${formatMoney(stats.savings)}. Nice work!`
+        );
+
+    } else {
+
+        addInsight(
+            "📉",
+            "Expenses currently exceed income.",
+            "danger"
+        );
+
+    }
+
+    // Daily spending
+    addInsight(
+        "📅",
+        `Average daily spending is ${formatMoney(stats.dailyAverage)}.`
+    );
+
+}
+
+renderInsights();
+</script>
+
+<script>
+    function showEmpty(containerId, message){
+
+    document.getElementById(containerId).innerHTML = `
+        <div class="empty-state">
+            ${message}
+        </div>
+    `;
+
+}
+</script>
+
+<script>
+    function formatMoney(value){
+
+    return currency + Number(value).toLocaleString(
+        undefined,
+        {
+            minimumFractionDigits:0,
+            maximumFractionDigits:2
+        }
+    );
+
+}
+</script>
+
+</body>
+
+</html>
