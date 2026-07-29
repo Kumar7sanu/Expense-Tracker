@@ -799,6 +799,84 @@ svg path:hover{
 
 }
 
+/* ==========================================
+   SMART INSIGHTS
+========================================== */
+
+.insight-card{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:16px;
+
+    padding:18px;
+
+    margin-bottom:16px;
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,.03);
+
+    border-left:5px solid var(--green);
+
+}
+
+.insight-icon{
+
+    font-size:24px;
+
+}
+
+.insight-text{
+
+    flex:1;
+
+    line-height:1.6;
+
+}
+
+.insight-title{
+
+    font-weight:700;
+
+    margin-bottom:6px;
+
+}
+
+.good{
+
+    border-left-color:var(--green);
+
+}
+
+.warning{
+
+    border-left-color:var(--orange);
+
+}
+
+.danger{
+
+    border-left-color:var(--red);
+
+}
+
+/* ==========================================
+   GREETING
+========================================== */
+
+#greeting{
+
+    font-size:42px;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
+}
+
     </style>
 
 </head>
@@ -811,18 +889,23 @@ svg path:hover{
          HEADER
     ======================= -->
 
-    <div class="header">
+    <div>
 
-        <h1>💰 Personal Expense Tracker</h1>
+    <h1 id="greeting">
 
-        <div class="subtitle"
-             id="dashboardSubtitle">
+        👋 Welcome
 
-            Offline Analytics Dashboard
+    </h1>
 
-        </div>
+    <div
+        class="subtitle"
+        id="dashboardSubtitle">
+
+        Offline Analytics Dashboard
 
     </div>
+
+</div>
 
     <!-- ===========================
      KPI SECTION
@@ -1153,9 +1236,7 @@ svg path:hover{
                 Smart Insights
             </div>
 
-            <div class="placeholder">
-                AI Insights
-            </div>
+            <div id="insightsContainer"></div>
 
         </div>
 
@@ -1287,6 +1368,179 @@ renderKPIs();
 /* ==========================================
    MONTHLY TREND
 ========================================== */
+const donutColors = [
+    "#22C55E",
+    "#3B82F6",
+    "#F59E0B",
+    "#EF4444",
+    "#8B5CF6",
+    "#06B6D4",
+    "#EC4899",
+    "#84CC16"
+];
+
+function polarToCartesian(cx, cy, r, angle) {
+
+    const rad = (angle - 90) * Math.PI / 180;
+
+    return {
+        x: cx + r * Math.cos(rad),
+        y: cy + r * Math.sin(rad)
+    };
+
+}
+
+function createArc(start, end, r) {
+
+    const startPoint = polarToCartesian(0, 0, r, end);
+    const endPoint = polarToCartesian(0, 0, r, start);
+
+    const largeArc = (end - start) <= 180 ? 0 : 1;
+
+    return `
+        M ${startPoint.x} ${startPoint.y}
+        A ${r} ${r} 0 ${largeArc} 0 ${endPoint.x} ${endPoint.y}
+    `;
+
+}
+
+function renderDonut() {
+
+    const group = document.getElementById("donutGroup");
+    const legend = document.getElementById("donutLegend");
+
+    group.innerHTML = "";
+    legend.innerHTML = "";
+
+    const totals = stats.categoryTotals || {};
+
+    const total = Object.values(totals)
+        .reduce((a, b) => a + b, 0);
+
+    document.getElementById("donutTotal").textContent =
+        formatMoney(total);
+
+    let angle = 0;
+    let index = 0;
+
+    for (const category in totals) {
+
+        const value = totals[category];
+
+        const percent = value / total;
+
+        const sweep = percent * 360;
+
+        const path = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path"
+        );
+
+        path.setAttribute(
+            "d",
+            createArc(angle, angle + sweep, 75)
+        );
+
+        path.setAttribute("fill", "none");
+
+        path.setAttribute(
+            "stroke",
+            donutColors[index % donutColors.length]
+        );
+
+        path.setAttribute("stroke-width", "25");
+
+        path.setAttribute("stroke-linecap", "round");
+
+        group.appendChild(path);
+
+        legend.innerHTML += `
+            <div class="legend-row">
+
+                <div class="legend-left">
+
+                    <div
+                        class="legend-color"
+                        style="background:${donutColors[index % donutColors.length]}">
+                    </div>
+
+                    <div class="legend-name">
+
+                        ${category}
+
+                    </div>
+
+                </div>
+
+                <div class="legend-value">
+
+                    ${formatMoney(value)}
+
+                </div>
+
+            </div>
+        `;
+
+        angle += sweep;
+        index++;
+
+    }
+
+}
+
+function renderCategoryBars() {
+
+    const container =
+        document.getElementById("categoryBars");
+
+    container.innerHTML = "";
+
+    const totals = stats.categoryTotals || {};
+
+    const total = Object.values(totals)
+        .reduce((a, b) => a + b, 0);
+
+    for (const category in totals) {
+
+        const value = totals[category];
+
+        const percent =
+            total > 0 ? (value / total) * 100 : 0;
+
+        container.innerHTML += `
+            <div class="category-row">
+
+                <div class="category-header">
+
+                    <div class="category-name">
+
+                        ${category}
+
+                    </div>
+
+                    <div class="category-value">
+
+                        ${formatMoney(value)}
+
+                    </div>
+
+                </div>
+
+                <div class="category-track">
+
+                    <div
+                        class="category-fill"
+                        style="width:${percent}%">
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+    }
+
+}
 
 function renderTrend(){
 
@@ -1493,6 +1747,296 @@ renderTrend();
 renderBudget();
 
 renderRecent();
+
+</script>
+
+<script>
+
+/* ==========================================
+   GREETING
+========================================== */
+
+function renderGreeting(){
+
+    const hour=new Date().getHours();
+
+    let greeting="👋 Welcome";
+
+    if(hour<12){
+
+        greeting="☀️ Good Morning";
+
+    }
+
+    else if(hour<18){
+
+        greeting="🌤️ Good Afternoon";
+
+    }
+
+    else{
+
+        greeting="🌙 Good Evening";
+
+    }
+
+    document.getElementById(
+
+        "greeting"
+
+    ).textContent=greeting;
+
+}
+
+/* ==========================================
+   INSIGHT HELPER
+========================================== */
+
+function addInsight(
+
+    icon,
+
+    title,
+
+    text,
+
+    type="good"
+
+){
+
+    document.getElementById(
+
+        "insightsContainer"
+
+    ).innerHTML+=`
+
+    <div class="insight-card ${type}">
+
+        <div class="insight-icon">
+
+            ${icon}
+
+        </div>
+
+        <div class="insight-text">
+
+            <div class="insight-title">
+
+                ${title}
+
+            </div>
+
+            ${text}
+
+        </div>
+
+    </div>
+
+    `;
+
+}
+
+/* ==========================================
+   SMART INSIGHTS
+========================================== */
+
+function renderInsights(){
+
+    const container=
+
+        document.getElementById(
+
+            "insightsContainer"
+
+        );
+
+    container.innerHTML="";
+
+    const budgetUsed=
+
+        (stats.expense/stats.budget)*100;
+
+    if(budgetUsed<50){
+
+        addInsight(
+
+            "✅",
+
+            "Budget",
+
+            `You've used only ${budgetUsed.toFixed(1)}% of your monthly budget.`,
+
+            "good"
+
+        );
+
+    }
+
+    else if(budgetUsed<80){
+
+        addInsight(
+
+            "⚠️",
+
+            "Budget",
+
+            `You've used ${budgetUsed.toFixed(1)}% of your budget. Monitor your spending.`,
+
+            "warning"
+
+        );
+
+    }
+
+    else{
+
+        addInsight(
+
+            "🚨",
+
+            "Budget",
+
+            `Budget usage has reached ${budgetUsed.toFixed(1)}%. Consider reducing expenses.`,
+
+            "danger"
+
+        );
+
+    }
+
+    if(stats.topCategory){
+
+        addInsight(
+
+            "📊",
+
+            "Top Category",
+
+            `Your highest spending category is <b>${stats.topCategory}</b>.`
+
+        );
+
+    }
+
+    if(stats.topMerchant){
+
+        addInsight(
+
+            "🏪",
+
+            "Top Merchant",
+
+            `Most of your spending was at <b>${stats.topMerchant}</b>.`
+
+        );
+
+    }
+
+    if(stats.savings>0){
+
+        addInsight(
+
+            "💰",
+
+            "Savings",
+
+            `You've saved ${formatMoney(stats.savings)} this month.`
+
+        );
+
+    }
+
+    else{
+
+        addInsight(
+
+            "📉",
+
+            "Savings",
+
+            "Your expenses currently exceed your income.",
+
+            "danger"
+
+        );
+
+    }
+
+    addInsight(
+
+        "📅",
+
+        "Daily Average",
+
+        `Your average daily spending is ${formatMoney(stats.dailyAverage)}.`
+
+    );
+
+}
+
+/* ==========================================
+   INITIALIZE DASHBOARD
+========================================== */
+
+function initDashboard(){
+
+    try{
+
+        renderGreeting();
+
+        renderKPIs();
+
+        renderDonut();
+
+        renderCategoryBars();
+
+        renderTrend();
+
+        renderBudget();
+
+        renderRecent();
+
+        renderInsights();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        document.body.innerHTML=`
+
+        <div style="
+
+            padding:50px;
+
+            color:white;
+
+            font-family:Arial;
+
+        ">
+
+            <h2>
+
+                Dashboard Error
+
+            </h2>
+
+            <p>
+
+                ${error.message}
+
+            </p>
+
+        </div>
+
+        `;
+
+    }
+
+}
+
+initDashboard();
 
 </script>
 
