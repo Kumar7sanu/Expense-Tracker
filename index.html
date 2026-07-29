@@ -377,6 +377,108 @@
 
 }
 
+/* ==========================================
+   KPI Cards
+========================================== */
+
+.kpi{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    gap:14px;
+
+}
+
+.kpi-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.kpi-label{
+
+    color:var(--muted);
+
+    font-size:14px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    font-weight:600;
+
+}
+
+.kpi-icon{
+
+    font-size:24px;
+
+}
+
+.kpi-value{
+
+    font-size:42px;
+
+    font-weight:700;
+
+    line-height:1;
+
+}
+
+.kpi-footer{
+
+    color:var(--muted);
+
+    font-size:14px;
+
+}
+
+/* Colors */
+
+.income{
+
+    color:var(--green);
+
+}
+
+.expense{
+
+    color:var(--red);
+
+}
+
+.savings{
+
+    color:var(--blue);
+
+}
+
+.budget{
+
+    color:var(--orange);
+
+}
+
+.average{
+
+    color:var(--purple);
+
+}
+
+.projected{
+
+    color:var(--cyan);
+
+}
+
     </style>
 
 </head>
@@ -402,61 +504,193 @@
 
     </div>
 
-    <!-- ======================
-         KPI CARDS
-    ======================= -->
+    <!-- ===========================
+     KPI SECTION
+=========================== -->
 
-    <div class="kpi-grid">
+<div class="kpi-grid">
 
-        <div class="card kpi">
+    <div class="card kpi">
 
-    <div class="kpi-placeholder"></div>
+        <div class="kpi-header">
 
-    <div class="kpi-placeholder small"></div>
+            <span class="kpi-label">
+                Income
+            </span>
 
-</div>
+            <span class="kpi-icon">
+                💰
+            </span>
 
-       <div class="card kpi">
+        </div>
 
-    <div class="kpi-placeholder"></div>
+        <div
+            class="kpi-value income"
+            id="incomeValue">
 
-    <div class="kpi-placeholder small"></div>
+            ₹0
 
-</div>
+        </div>
 
-       <div class="card kpi">
+        <div class="kpi-footer">
 
-    <div class="kpi-placeholder"></div>
+            Total Income
 
-    <div class="kpi-placeholder small"></div>
-
-</div>
-
-        <div class="card kpi">
-
-    <div class="kpi-placeholder"></div>
-
-    <div class="kpi-placeholder small"></div>
-
-</div>
-
-        <div class="card kpi">
-
-    <div class="kpi-placeholder"></div>
-
-    <div class="kpi-placeholder small"></div>
-
-</div>
-
-       <div class="card kpi">
-
-    <div class="kpi-placeholder"></div>
-
-    <div class="kpi-placeholder small"></div>
-
-</div>
+        </div>
 
     </div>
+
+    <div class="card kpi">
+
+        <div class="kpi-header">
+
+            <span class="kpi-label">
+                Expense
+            </span>
+
+            <span class="kpi-icon">
+                💳
+            </span>
+
+        </div>
+
+        <div
+            class="kpi-value expense"
+            id="expenseValue">
+
+            ₹0
+
+        </div>
+
+        <div class="kpi-footer">
+
+            Total Expense
+
+        </div>
+
+    </div>
+
+    <div class="card kpi">
+
+        <div class="kpi-header">
+
+            <span class="kpi-label">
+                Savings
+            </span>
+
+            <span class="kpi-icon">
+                🏦
+            </span>
+
+        </div>
+
+        <div
+            class="kpi-value savings"
+            id="savingsValue">
+
+            ₹0
+
+        </div>
+
+        <div class="kpi-footer">
+
+            Income − Expense
+
+        </div>
+
+    </div>
+
+    <div class="card kpi">
+
+        <div class="kpi-header">
+
+            <span class="kpi-label">
+                Budget Left
+            </span>
+
+            <span class="kpi-icon">
+                🎯
+            </span>
+
+        </div>
+
+        <div
+            class="kpi-value budget"
+            id="budgetLeftValue">
+
+            ₹0
+
+        </div>
+
+        <div class="kpi-footer">
+
+            Remaining Budget
+
+        </div>
+
+    </div>
+
+    <div class="card kpi">
+
+        <div class="kpi-header">
+
+            <span class="kpi-label">
+                Daily Average
+            </span>
+
+            <span class="kpi-icon">
+                📅
+            </span>
+
+        </div>
+
+        <div
+            class="kpi-value average"
+            id="dailyAverageValue">
+
+            ₹0
+
+        </div>
+
+        <div class="kpi-footer">
+
+            Per Day
+
+        </div>
+
+    </div>
+
+    <div class="card kpi">
+
+        <div class="kpi-header">
+
+            <span class="kpi-label">
+                Projected
+            </span>
+
+            <span class="kpi-icon">
+                📈
+            </span>
+
+        </div>
+
+        <div
+            class="kpi-value projected"
+            id="projectedValue">
+
+            ₹0
+
+        </div>
+
+        <div class="kpi-footer">
+
+            Estimated Month End
+
+        </div>
+
+    </div>
+
+</div>
 
     <!-- ======================
          DASHBOARD
@@ -539,6 +773,125 @@
     </div>
 
 </div>
+
+<script>
+
+const stats = window.EXPENSE_STATS;
+const config = window.EXPENSE_CONFIG;
+
+const currency = config.currency || "₹";
+
+function formatMoney(value){
+
+    return currency +
+
+    Number(value).toLocaleString(
+
+        "en-IN",
+
+        {
+
+            maximumFractionDigits:0
+
+        }
+
+    );
+
+}
+
+function animateCounter(id,target,duration=1200){
+
+    const element=document.getElementById(id);
+
+    let start=0;
+
+    const startTime=performance.now();
+
+    function update(now){
+
+        const progress=Math.min(
+
+            (now-startTime)/duration,
+
+            1
+
+        );
+
+        const value=start+
+
+            (target-start)*progress;
+
+        element.textContent=
+
+            formatMoney(value);
+
+        if(progress<1){
+
+            requestAnimationFrame(update);
+
+        }
+
+    }
+
+    requestAnimationFrame(update);
+
+}
+
+function renderKPIs(){
+
+    animateCounter(
+
+        "incomeValue",
+
+        stats.income
+
+    );
+
+    animateCounter(
+
+        "expenseValue",
+
+        stats.expense
+
+    );
+
+    animateCounter(
+
+        "savingsValue",
+
+        stats.savings
+
+    );
+
+    animateCounter(
+
+        "budgetLeftValue",
+
+        stats.budgetLeft
+
+    );
+
+    animateCounter(
+
+        "dailyAverageValue",
+
+        stats.dailyAverage
+
+    );
+
+    animateCounter(
+
+        "projectedValue",
+
+        stats.projected
+
+    );
+
+}
+
+renderKPIs();
+
+</script>
 
 </body>
 
