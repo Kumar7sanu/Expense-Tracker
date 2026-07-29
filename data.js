@@ -1,113 +1,182 @@
-window.EXPENSE_DATA=[
-  {
-    "id": 7,
-    "date": "2026-07-29",
-    "month": "2026-07",
-    "weekday": "Wednesday",
-    "merchant": "Unknown",
-    "category": "other",
-    "amount": 243.0,
-    "note": "ciggerate",
-    "type": "expense",
-    "chat_id": 800517372,
-    "created_at": "2026-07-29 15:16:53"
-  },
-  {
-    "id": 6,
-    "date": "2026-07-29",
-    "month": "2026-07",
-    "weekday": "Wednesday",
-    "merchant": "Swiggy",
-    "category": "food",
-    "amount": 183.0,
-    "note": "swiggy",
-    "type": "expense",
-    "chat_id": 800517372,
-    "created_at": "2026-07-29 15:16:41"
-  },
-  {
-    "id": 5,
-    "date": "2026-07-29",
-    "month": "2026-07",
-    "weekday": "Wednesday",
-    "merchant": "Zepto",
-    "category": "groceries",
-    "amount": 313.0,
-    "note": "zepto",
-    "type": "expense",
-    "chat_id": 800517372,
-    "created_at": "2026-07-29 15:16:35"
-  },
-  {
-    "id": 4,
-    "date": "2026-07-29",
-    "month": "2026-07",
-    "weekday": "Wednesday",
-    "merchant": "Uber",
-    "category": "travel",
-    "amount": 650.0,
-    "note": "uber",
-    "type": "expense",
-    "chat_id": 800517372,
-    "created_at": "2026-07-29 15:16:21"
-  },
-  {
-    "id": 1,
-    "date": "2026-07-28",
-    "month": "2026-07",
-    "weekday": "Tuesday",
-    "merchant": "Unknown",
-    "category": "other",
-    "amount": 75000.0,
-    "note": "salary",
-    "type": "income",
-    "chat_id": 800517372,
-    "created_at": "2026-07-28 15:05:55"
-  }
+/* ==========================================
+   EXPENSE DATA
+========================================== */
+
+window.EXPENSE_DATA = [
+
+{
+    id: 1,
+    date: "2026-07-01",
+    month: "2026-07",
+    weekday: "Wednesday",
+    merchant: "Salary",
+    category: "Income",
+    amount: 75000,
+    note: "Monthly Salary",
+    type: "income"
+},
+
+{
+    id: 2,
+    date: "2026-07-12",
+    month: "2026-07",
+    weekday: "Sunday",
+    merchant: "Swiggy",
+    category: "Food",
+    amount: 420,
+    note: "Lunch",
+    type: "expense"
+},
+
+{
+    id: 3,
+    date: "2026-07-15",
+    month: "2026-07",
+    weekday: "Wednesday",
+    merchant: "Uber",
+    category: "Travel",
+    amount: 650,
+    note: "Office Ride",
+    type: "expense"
+},
+
+{
+    id: 4,
+    date: "2026-07-17",
+    month: "2026-07",
+    weekday: "Friday",
+    merchant: "Unknown",
+    category: "Other",
+    amount: 130,
+    note: "",
+    type: "expense"
+}
+
 ];
 
-window.EXPENSE_STATS={
-  "income": 75000.0,
-  "expense": 1389.0,
-  "savings": 73611.0,
-  "budget": 100000,
-  "budgetLeft": 98611.0,
-  "dailyAverage": 99.21,
-  "projected": 2976.3,
-  "topCategory": "travel",
-  "topMerchant": "Uber",
-  "categoryTotals": {
-    "other": 243.0,
-    "food": 183.0,
-    "groceries": 313.0,
-    "travel": 650.0
-  },
-  "merchantTotals": {
-    "Unknown": 243.0,
-    "Swiggy": 183.0,
-    "Zepto": 313.0,
-    "Uber": 650.0
-  },
-  "monthlyTotals": {
-    "2026-07": 1389.0
-  }
+
+/* ==========================================
+   DASHBOARD CONFIG
+========================================== */
+
+window.EXPENSE_CONFIG = {
+
+    currency: "₹",
+    budget: 100000
+
 };
 
-window.EXPENSE_CONFIG={
-  "currency": "\u20b9",
-  "monthlyBudget": 100000,
-  "budgets": {
-    "food": 8000,
-    "travel": 5000,
-    "groceries": 7000,
-    "rent": 18000,
-    "bills": 5000,
-    "clothes": 4000,
-    "luxuries": 3000,
-    "investments": 10000,
-    "health": 4000,
-    "education": 3000,
-    "other": 5000
-  },
-  "dashboardTitle": "Personal Expense Tracker"
-};
+
+/* ==========================================
+   CALCULATE DASHBOARD STATS
+========================================== */
+
+(function () {
+
+    const transactions = window.EXPENSE_DATA;
+    const budget = window.EXPENSE_CONFIG.budget;
+
+    let income = 0;
+    let expense = 0;
+
+    const categoryTotals = {};
+    const merchantTotals = {};
+    const monthlyTotals = {};
+
+    transactions.forEach(txn => {
+
+        const amount = Number(txn.amount) || 0;
+
+        if (txn.type === "income") {
+
+            income += amount;
+
+        } else {
+
+            expense += amount;
+
+            categoryTotals[txn.category] =
+                (categoryTotals[txn.category] || 0) + amount;
+
+            merchantTotals[txn.merchant] =
+                (merchantTotals[txn.merchant] || 0) + amount;
+        }
+
+        if (txn.month) {
+
+            monthlyTotals[txn.month] =
+                (monthlyTotals[txn.month] || 0) + amount;
+
+        }
+
+    });
+
+    const savings = income - expense;
+
+    const budgetLeft = budget - expense;
+
+    const today = new Date().getDate();
+
+    const dailyAverage =
+        expense / Math.max(today, 1);
+
+    const projected =
+        dailyAverage * 30;
+
+    let topCategory = "";
+    let topCategoryValue = 0;
+
+    Object.entries(categoryTotals).forEach(([name, value]) => {
+
+        if (value > topCategoryValue) {
+
+            topCategoryValue = value;
+            topCategory = name;
+
+        }
+
+    });
+
+    let topMerchant = "";
+    let topMerchantValue = 0;
+
+    Object.entries(merchantTotals).forEach(([name, value]) => {
+
+        if (value > topMerchantValue) {
+
+            topMerchantValue = value;
+            topMerchant = name;
+
+        }
+
+    });
+
+    window.EXPENSE_STATS = {
+
+        income,
+
+        expense,
+
+        savings,
+
+        budget,
+
+        budgetLeft,
+
+        dailyAverage,
+
+        projected,
+
+        categoryTotals,
+
+        merchantTotals,
+
+        monthlyTotals,
+
+        topCategory,
+
+        topMerchant
+
+    };
+
+})();
