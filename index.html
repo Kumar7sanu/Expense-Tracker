@@ -1438,7 +1438,7 @@ function renderDonut() {
 
         path.setAttribute(
             "d",
-            createArc(angle, angle + sweep, 75)
+            createArc(angle, angle + sweep, 90)
         );
 
         path.setAttribute("fill", "none");
@@ -1448,7 +1448,7 @@ function renderDonut() {
             donutColors[index % donutColors.length]
         );
 
-        path.setAttribute("stroke-width", "25");
+        path.setAttribute("stroke-width", "30");
 
         path.setAttribute("stroke-linecap", "round");
 
